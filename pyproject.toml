@@ -1,0 +1,33 @@
+[build-system]
+requires = ["setuptools>=58.0.4", "wheel>=0.37.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rlscv"
+version = "0.0.1"
+description = ""
+requires-python = ">=3.11"
+authors = [{name="Mark Mayerfeld", email = "nosanmark@gmail.com"}]
+license = {file="LICENSE"}
+readme = "README.md"
+dependencies = [
+    "torch",
+    "torchvision",
+    "opencv-contrib-python",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "black",
+    "isort",
+    "ipykernel",
+]
+
+[project.urls]
+documentation = "https://readthedocs.org"
+repository = "https://github.com/RakitaLabSoftware/rlscv" 
+changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
+
+[tool.setuptools]
+packages = ["rlscv"]
