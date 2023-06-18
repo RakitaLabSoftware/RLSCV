@@ -31,3 +31,4 @@ changelog = "https://github.com/me/spam/blob/master/CHANGELOG.md"
 
 [tool.setuptools.packages.find]
 where = ["rlscv"]  # list of folders that contain the packages (["."] by default)
+include = ["rlscv/*"]  # package names should match these glob patterns (["*"] by default)
