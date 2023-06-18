@@ -1,1 +1,1 @@
-from .structures import RLSImage
+from rlscv.structures import RLSImage
