@@ -12,7 +12,7 @@ class ImageFormat(Enum):
     BCHW = "BCHW"
 
 
-class RLSImage(torch.Tensor):
+class RLSImage:
     def __init__(
         self, data: torch.Tensor, state: ImageFormat = ImageFormat.CHW
     ) -> None:
@@ -48,7 +48,7 @@ class RLSImage(torch.Tensor):
         return cls(torch.Tensor(np.array(data) / 255.0).permute(2, 0, 1))  # type: ignore
 
     @property
-    def __call__(self) -> torch.Tensor | np.ndarray:
+    def __call__(self) -> torch.Tensor:
         return self._data
 
     def to_chw(self):
