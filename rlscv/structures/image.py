@@ -1,5 +1,5 @@
 from enum import Enum
-from typing import Literal, Self
+from typing import Self
 import torch
 import numpy as np
 import torchvision.transforms.functional as T
@@ -12,10 +12,11 @@ class ImageFormat(Enum):
     BCHW = "BCHW"
 
 
-class RLSImage:
+class RLSImage(torch.Tensor):
     def __init__(
         self, data: torch.Tensor, state: ImageFormat = ImageFormat.CHW
     ) -> None:
+        super().__init__()
         self._data = data
         self._state = state
 
@@ -23,14 +24,6 @@ class RLSImage:
         cloned = self._data.clone()
         cur_state = self._state
         return RLSImage(cloned, cur_state)
-
-    @property
-    def shape(self) -> torch.Size:
-        return self._data.shape
-
-    @property
-    def size(self):
-        return self._data.size()
 
     def reshape(self, h, w):
         self._data = T.resize(self._data, [h, w])
@@ -48,12 +41,6 @@ class RLSImage:
     def __array__(self):
         return self._data.detach().numpy()
 
-    def __torch_function__(self, func, types, args=(), kwargs=None):
-        if kwargs is None:
-            kwargs = {}
-        result = func(self._data, *args, **kwargs)
-        return RLSImage(result)
-
     @classmethod
     def load(cls, path: str) -> Self:
         data = cv2.imread(path)
@@ -65,34 +52,49 @@ class RLSImage:
         return self._data
 
     def to_chw(self):
+        """
+        Convert to [channels, height, width]
+        """
         if self._data is None:
             raise KeyError()
-        elif self._state == ImageFormat.HWC:
-            self._data = self._data.permute(1, 2, 0)
+        if self._state == ImageFormat.HWC:
+            data = self._data.permute(1, 2, 0).clone()
         elif self._state == ImageFormat.BCHW:
-            self._data = self._data.squeeze(0)
-        self._state = ImageFormat.CHW
-        return self
+            data = self._data.squeeze(0).clone()
+        else:
+            data = self._data.clone()
+        state = ImageFormat.CHW
+        return RLSImage(data, state)
 
     def to_bchw(self):
+        """
+        Convert to [batch, channels, height, width]
+        """
         if self._data is None:
             raise KeyError()
         if self._state == ImageFormat.CHW:
-            self._data = self._data.unsqueeze(0)
+            data = self._data.unsqueeze(0).clone()
         elif self._state == ImageFormat.HWC:
-            self._data = self._data.permute(2, 0, 1).unsqueeze(0)
-        self._state = ImageFormat.BCHW
-        return self
+            data = self._data.permute(2, 0, 1).unsqueeze(0).clone()
+        else:
+            data = self._data.clone()
+        state = ImageFormat.BCHW
+        return RLSImage(data, state)
 
     def to_hwc(self):
+        """
+        Convert to [height, width, channels]
+        """
         if self._data is None:
             raise KeyError()
         if self._state == ImageFormat.BCHW:
-            self._data = self._data.squeeze(0)
+            data = self._data.squeeze(0).clone()
         elif self._state == ImageFormat.CHW:
-            self._data = self._data.permute(1, 2, 0)
-        self._state = ImageFormat.HWC
-        return self
+            data = self._data.permute(1, 2, 0).clone()
+        else:
+            data = self._data.clone()
+        state = ImageFormat.HWC
+        return RLSImage(data, state)
 
     def to_numpy(self):
         if isinstance(self._data, torch.Tensor):
