@@ -33,7 +33,7 @@ class RLSImage:
 
     def rotate(self, angle: float) -> None:
         # FIXME ROTATE FIX
-        _, h, w = self._data.shape[:2]
+        h, w = self._data.shape[:2]
         diagonal: int = int(math.sqrt(h ^ 2 + w ^ 2))
         self._data = T.pad(self._data, [diagonal, diagonal])
         self._data = T.rotate(
