@@ -1,9 +1,11 @@
 from enum import Enum
+import math
 from typing import Self
 import torch
 import numpy as np
-import torchvision.transforms.functional as T
+import torchvision.transforms.v2.functional as T
 import cv2
+import os
 
 
 class ImageFormat(Enum):
@@ -25,17 +27,23 @@ class RLSImage:
         cur_state = self._state
         return RLSImage(cloned, cur_state)
 
-    def reshape(self, h, w):
+    def reshape(self, h: int, w: int) -> "RLSImage":
         self._data = T.resize(self._data, [h, w])
         return self
 
-    def rotate(self, angle):
-        self._data = T.rotate(self._data, angle, expand=True)
+    def rotate(self, angle: float) -> None:
+        # FIXME ROTATE FIX
+        _, h, w = self._data.shape[:2]
+        diagonal: int = int(math.sqrt(h ^ 2 + w ^ 2))
+        self._data = T.pad(self._data, [diagonal, diagonal])
+        self._data = T.rotate(
+            self._data, angle, T.InterpolationMode.BILINEAR, expand=True
+        )
 
-    def hflip(self):
+    def hflip(self) -> None:
         self._data = T.hflip(self._data)
 
-    def vflip(self):
+    def vflip(self) -> None:
         self._data = T.vflip(self._data)
 
     def __array__(self):
@@ -51,7 +59,7 @@ class RLSImage:
     def __call__(self) -> torch.Tensor:
         return self._data
 
-    def to_chw(self):
+    def to_chw(self) -> "RLSImage":
         """
         Convert to [channels, height, width]
         """
@@ -66,7 +74,7 @@ class RLSImage:
         state = ImageFormat.CHW
         return RLSImage(data, state)
 
-    def to_bchw(self):
+    def to_bchw(self) -> "RLSImage":
         """
         Convert to [batch, channels, height, width]
         """
@@ -81,7 +89,7 @@ class RLSImage:
         state = ImageFormat.BCHW
         return RLSImage(data, state)
 
-    def to_hwc(self):
+    def to_hwc(self) -> "RLSImage":
         """
         Convert to [height, width, channels]
         """
@@ -96,7 +104,13 @@ class RLSImage:
         state = ImageFormat.HWC
         return RLSImage(data, state)
 
-    def to_numpy(self):
+    def to_numpy(self) -> np.ndarray:
+        # TODO add dtype
         if isinstance(self._data, torch.Tensor):
             self._data.detach().cpu().numpy()
         return np.asarray(self._data)
+
+    def save(self, path: str) -> None:
+        if not os.path.isdir(os.path.dirname(path)):
+            os.mkdir(os.path.dirname(path))
+        cv2.imwrite(path, self.to_numpy())
