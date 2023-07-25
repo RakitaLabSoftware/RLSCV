@@ -16,7 +16,7 @@ dependencies = ["torch", "torchvision", "opencv-contrib-python", "lightning"]
 dev = ["pytest", "black", "isort", "build"]
 
 [project.urls]
-repository = "https://github.com/RakitaLabSoftware/rlscv"
+repository = "https://github.com/RakitaLabSoftware/rlsvision"
 
-[tool.setuptools]
-packages = ["rlsvision"]
+[tool.setuptools.packages.find]
+where = ["rlsvision"]
