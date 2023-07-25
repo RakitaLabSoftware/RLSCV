@@ -3,30 +3,20 @@ requires = ["setuptools>=61.0", "wheel>=0.37.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "rlscv"
+name = "rlsvision"
 version = "0.1.0"
 description = ""
 requires-python = ">=3.11"
-authors = [{name="Mark Mayerfeld", email = "mark.m.mayerfeld@gmail.com"}]
-license = {file="LICENSE"}
+authors = [{ name = "Mark Mayerfeld", email = "mark.m.mayerfeld@gmail.com" }]
+license = { file = "LICENSE" }
 readme = "README.md"
-dependencies = [
-    "torch",
-    "torchvision",
-    "opencv-contrib-python",
-    "lightning"
-]
+dependencies = ["torch", "torchvision", "opencv-contrib-python", "lightning"]
 
 [project.optional-dependencies]
-dev = [
-    "pytest",
-    "black",
-    "isort",
-    "build"
-]
+dev = ["pytest", "black", "isort", "build"]
 
 [project.urls]
-repository = "https://github.com/RakitaLabSoftware/rlscv" 
+repository = "https://github.com/RakitaLabSoftware/rlscv"
 
 [tool.setuptools]
-packages = ["rlscv"]
+packages = ["rlsvision"]
