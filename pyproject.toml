@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rlsvision"
-version = "0.1.0"
+version = "0.1.1"
 description = ""
 requires-python = ">=3.11"
 authors = [{ name = "Mark Mayerfeld", email = "mark.m.mayerfeld@gmail.com" }]
