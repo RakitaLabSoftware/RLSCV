@@ -3,7 +3,8 @@ import torch
 from PIL import Image
 from torchvision.transforms import ToTensor
 from torchvision.transforms.functional import resize
-from rlsvision.structures.image import ImageFormat, RLSImage
+from rlsvision import RLSImage
+from rlsvision.structures.image import ImageFormat
 
 
 def test_load():

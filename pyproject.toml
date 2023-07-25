@@ -19,4 +19,4 @@ dev = ["pytest", "black", "isort", "build"]
 repository = "https://github.com/RakitaLabSoftware/rlsvision"
 
 [tool.setuptools.packages.find]
-where = ["rlsvision"]
+include = ["rlsvision*"]
